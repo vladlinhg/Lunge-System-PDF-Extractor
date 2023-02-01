@@ -38,8 +38,14 @@ class MyDB:
         self.cursor.execute("show databases")
         print([row for row in self.cursor.fetchall()])
 
-    def create_databases(self) -> None:
-        pass
+    def create_database(self) -> None:
+        self.cursor.execute("create database lunge_test")
+        print("Database 'lunge_test' created in the server")
+    
+    def create_table(self) -> None:
+        self.cursor.execute("use lunge_test")
+        self.cursor.execute("create table articles (string ")
+
     
 
 
@@ -48,6 +54,7 @@ def main():
     db = Database()
     mydb = MyDB(db)
     mydb.show_databases()
+    mydb.create_database()
 
 
 if __name__ == "__main__":
