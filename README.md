@@ -31,13 +31,13 @@
     2. Progress
         1. in progress
     3. Comparison
-    | Product      | Speed       | Text Extract | Table Extract | External Library | In DevOps |
-    | -----------  | ----------- | ------------ | ------------- | ---------------- | --------- |         
-    | pdfminer     | Fast        | Yes          | No            | No               | No        |
-    | PyPDF2       | Moderate    | Yes          | No            | No               | No        |
-    | pymupdf      | Fastest     | Yes          | No            | Needed           | Yes       |
-    | tabula-py    | Moderate    | No           | Yes           | No               | No        |
-    | pdfPlumber   | Fast        | Yes          | Yes           | No               | Yes       |     
+| Product      | Speed       | Text Extract | Table Extract | External Library | In DevOps |
+| -----------  | ----------- | ------------ | ------------- | ---------------- | --------- |         
+| pdfminer     | Fast        | Yes          | No            | No               | No        |
+| PyPDF2       | Moderate    | Yes          | No            | No               | No        |
+| pymupdf      | Fastest     | Yes          | No            | Needed           | Yes       |
+| tabula-py    | Moderate    | No           | Yes           | No               | No        |
+| pdfPlumber   | Fast        | Yes          | Yes           | No               | Yes       |     
 
 4. Output Function
     1. Goal
