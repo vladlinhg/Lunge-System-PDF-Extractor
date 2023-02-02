@@ -4,6 +4,8 @@
     Nai Yen Lin
     Eddie Wang
 # Installation & Environment
+1. install pdfplumber
+    1. pip install pdfplumber
 
 
 # Features to be Implemented
