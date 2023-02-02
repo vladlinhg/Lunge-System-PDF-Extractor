@@ -6,4 +6,34 @@
 # Installation & Environment
 
 
-# Features
+# Features to be Implemented
+1. Database Record
+    1. Goal
+        1. Store host, user, password, database, table, etc.
+        2. Data stored in json/csv/txt
+        3. Databse class
+    2. Progress
+        1. Class created
+        2. Connector established
+
+2. Directory Record
+    1. Goal 
+        1. Store path, name, tag, etc.
+        2. Data stored in json/csv/txt
+        3. Directory class
+    2. Progress
+        1. in progress
+
+3. Read Function
+    1. Goal
+        1. Original: pdfminer (stop maintained from 2020) / new: pdfPlumber (still in DevOps)
+        2. Output pdf content into dictionary
+    2. Progress
+        1. in progress
+
+4. Output Function
+    1. Goal
+        1. dictionary will be output into json files stored into specific directory appointed by user
+        2. MySQL table has limit on text length
+    2. Progress
+        1. in progress
