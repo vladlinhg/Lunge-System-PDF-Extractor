@@ -31,6 +31,7 @@
     2. Progress
         1. in progress
     3. Comparison
+
 | Product      | Speed       | Text Extract | Table Extract | External Library | In DevOps |
 | -----------  | ----------- | ------------ | ------------- | ---------------- | --------- |         
 | pdfminer     | Fast        | Yes          | No            | No               | No        |
