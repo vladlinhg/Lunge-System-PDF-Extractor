@@ -56,11 +56,13 @@ class Directory:
 
 class DirInput(Directory):
     def __init__(self) -> None:
-        super().__init__()
+        dir = input("Please Enter the directory for data input in /xx/xx/xx.pdf or c:/xxx/xxx.pdf: ")
+        self.dir = Path(dir)
 
 class DirOutput(Directory):
     def __init__(self) -> None:
-        super().__init__()
+        dir = input("Please Enter the directory for data output in /xx/xx/xx.json or c:/xxx/xxx.json: ")
+        self.dir = Path(dir)
 
     
 
