@@ -5,6 +5,7 @@ import getpass
 from pathlib import Path
 import pdfplumber
 import mysql.connector
+import json
 
 
 class Database:
@@ -68,10 +69,16 @@ class DirOutput(Directory):
 def main():
     dirinput = DirInput()
     diroutput = DirOutput()
+    content = []
     with pdfplumber.open(dirinput.dir) as pdf:
         for page in pdf.pages:
             text = page.extract_words(x_tolerance=3, y_tolerance=3, keep_blank_chars=False, use_text_flow=False, horizontal_ltr=True, vertical_ttb=True, extra_attrs=[], split_at_punctuation=False)
-            print(text)
+            for word in text:
+                content.append(word["text"])
+    jsonString = json.dumps(content)
+    jsonFile = open(diroutput.dir, "w")
+    jsonFile.write(jsonString)
+    jsonFile.close()   
 
 
 
