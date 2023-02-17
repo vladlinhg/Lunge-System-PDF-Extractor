@@ -7,7 +7,6 @@ import pdfplumber
 #import mysql.connector
 import json
 import os
-
 class Database:
     def __init__(self) -> None:
         self.hostname = input("What host to connect to: ")
@@ -127,7 +126,7 @@ def main():
     jsonFile = open(diroutput.dir, "w")
     jsonFile.write(jsonString)
     jsonFile.close()
-            
+
 if __name__ == "__main__":
     main()
-  
+
