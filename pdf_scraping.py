@@ -7,6 +7,8 @@ import pdfplumber
 #import mysql.connector
 import json
 import os
+import glob
+from tqdm import tqdm
 class Database:
     def __init__(self) -> None:
         self.hostname = input("What host to connect to: ")
@@ -49,32 +51,51 @@ class MyDB:
         pass
 
 class Directory:
+    """Represents a directory path for input or output of PDF files."""
     def init(self) -> None:
-        dir = input()
+        """Prompts the user to input a directory path and stores it as a Path object."""
+        dir = input("Please enter the directory path (not including the pdf): ")
         self.dir = Path(dir)
 
+
 class DirInput(Directory):
-    def init(self) -> None:
-        input_type = input("To scan one pdf, enter 'pdf'. To scan an entire directory, enter 'dir'." )
-        if input_type == 'pdf':
+     """Prompts the user to specify whether to scan an individual PDF or an entire directory, and
+        prompts for the appropriate input, and stores the list of PDF files as an attribute."""
+     def init(self) -> None:
+        dir_type = input("Do you want to scan one individual pdf or an entire directory? (Type 'pdf' or 'dir') ")
+        if dir_type == 'pdf':
             dir = input("Please enter the full pdf path for data input: ")
-        elif input_type == 'dir':
-            dir = input("Please enter the full directory path:")
-            self.pdf_dir = [f for f in os.listdir(dir) if f.endswith('.pdf')]
+            self.pdf_files = [dir]
+        elif dir_type == 'dir':
+            dir = input("Please enter the directory path: ")
+            self.pdf_files = tqdm(glob.glob(os.path.join(dir, '*.pdf')))
+            if not self.pdf_files:
+                raise Exception("No PDF files in the directory.")
+
         else:
-            raise Exception("Invalid input type, please enter 'dir' or 'pdf'.")
+            raise Exception("Invalid input. Please enter 'pdf' or 'dir'.")
         self.dir = Path(dir)
+
 
 class DirOutput(Directory):
     def init(self) -> None:
-        dir = input("Please enter the full .json / .    txt path for output: ")
+        dir = input("Please enter the full directory path for output: ")
         self.dir = Path(dir)
-    
-def extract_data(pdf_path):
-    #function to extract data from pdf.
+
+
+def extract_content(pdf_path):
+    """Extracts the text content of a PDF file and returns a list of dictionaries, where each dictionary
+    contains a paragraph number and its corresponding text.
+
+    Args:
+        pdf_path (str): The file path to the PDF file to extract content from.
+
+    Returns:
+        content (list): A list of dictionaries, where each dictionary represents a paragraph and contains a 
+        paragraph number and its corresponding text.
+    """
     with pdfplumber.open(pdf_path) as pdf:
         full_text = ""
-        #extracting text with pdfplumber, initialize full text variable to extract to.
         for page in pdf.pages:
             full_text += page.extract_text(
                 x_tolerance=3,
@@ -86,46 +107,39 @@ def extract_data(pdf_path):
                 extra_attrs=[],
                 split_at_punctuation=False
             )
-        #Split string with newline seperator
         paragraphs = full_text.split("\n")
-        #Initialize paragraph count and variable
         current_paragraph = ""
         paragraph_number = 1
         content = []
         for paragraph in paragraphs:
-            #Strip whitespace
             if paragraph.strip() == "":
-                #Check if paragraph is empty. If it is, clear string and add paragraph count, append text
                 if current_paragraph != "":
                     content.append({"paragraph_number": paragraph_number, "text": current_paragraph})
                     current_paragraph = ""
                     paragraph_number += 1
             else:
-                #Append current paragraph to paragraph
                 current_paragraph += " " + paragraph
         if current_paragraph != "":
-            #Once all paragraphs are processed, append to the content list
             content.append({"paragraph_number": paragraph_number, "text": current_paragraph})
-        return content
+    return content
+
 
 def main():
+    """The main function of the script that extracts the content from each PDF file in the input directory,
+    saves the content as a list of dictionaries, and outputs the content as a JSON file in the output directory."""
     dirinput = DirInput()
-    dirinput.init()
     diroutput = DirOutput()
+    dirinput.init()
     diroutput.init()
     content = []
-    #Check to see if the input has attribute to scan entire directory
-    if hasattr(dirinput, 'pdf_dir'):
-        for pdf_file in dirinput.pdf_dir:
-            pdf_path = os.path.join(dirinput.dir, pdf_file)
-            content += extract_data(pdf_path)
-    else:
-    #If no attribute, read pdf as usual
-        content = extract_data(dirinput.dir)
-    jsonString = json.dumps(content)
-    jsonFile = open(diroutput.dir, "w")
-    jsonFile.write(jsonString)
-    jsonFile.close()
+    for pdf_file in dirinput.pdf_files:
+        content = extract_content(pdf_file)
+        output_file = os.path.splitext(os.path.basename(pdf_file))[0] + ".json"
+        output_path = os.path.join(diroutput.dir, output_file)
+        jsonString = json.dumps(content)
+        jsonFile = open(output_path, "w")
+        jsonFile.write(jsonString)
+        jsonFile.close()
 
 if __name__ == "__main__":
     main()
