@@ -71,7 +71,6 @@ class DirInput(Directory):
             self.pdf_files = tqdm(glob.glob(os.path.join(dir, '*.pdf')))
             if not self.pdf_files:
                 raise Exception("No PDF files in the directory.")
-
         else:
             raise Exception("Invalid input. Please enter 'pdf' or 'dir'.")
         self.dir = Path(dir)
@@ -94,6 +93,7 @@ def extract_content(pdf_path):
         content (list): A list of dictionaries, where each dictionary represents a paragraph and contains a 
         paragraph number and its corresponding text.
     """
+    #extracting text with pdfplumber, initialize full text variable to extract to.
     with pdfplumber.open(pdf_path) as pdf:
         full_text = ""
         for page in pdf.pages:
@@ -107,19 +107,25 @@ def extract_content(pdf_path):
                 extra_attrs=[],
                 split_at_punctuation=False
             )
+        #Split string with newline seperator
         paragraphs = full_text.split("\n")
+        #Initialize paragraph count and variables
         current_paragraph = ""
         paragraph_number = 1
         content = []
         for paragraph in paragraphs:
+            #Strip whitespace
             if paragraph.strip() == "":
+                #Check if paragraph is empty. If it is, clear string and add paragraph count, append text
                 if current_paragraph != "":
                     content.append({"paragraph_number": paragraph_number, "text": current_paragraph})
                     current_paragraph = ""
                     paragraph_number += 1
             else:
+                #Append current paragraph to paragraph
                 current_paragraph += " " + paragraph
         if current_paragraph != "":
+            #Once all paragraphs are processed, append to the content list
             content.append({"paragraph_number": paragraph_number, "text": current_paragraph})
     return content
 
@@ -134,7 +140,9 @@ def main():
     content = []
     for pdf_file in dirinput.pdf_files:
         content = extract_content(pdf_file)
+        #split filename from the extension, add .json to the end
         output_file = os.path.splitext(os.path.basename(pdf_file))[0] + ".json"
+        #construct full path
         output_path = os.path.join(diroutput.dir, output_file)
         jsonString = json.dumps(content)
         jsonFile = open(output_path, "w")
