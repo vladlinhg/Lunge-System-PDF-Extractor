@@ -123,7 +123,7 @@ def main():
         output_path = os.path.join(diroutput.dir, output_file)
         #Error handling to check if files exist
         while os.path.exists(output_path):
-            exist_choice = input(f"The file {output_file} already exists within the directory. Type 'O' to overwrite, or 'N' to change the file name.")
+            exist_choice = input(f" The file {output_file} already exists within the directory. Type 'O' to overwrite, or 'N' to change the file name.")
             if exist_choice == "O" or exist_choice == "o":
                 break
             elif exist_choice == "N" or exist_choice == "n":
