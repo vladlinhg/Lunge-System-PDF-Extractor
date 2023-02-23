@@ -60,21 +60,32 @@ class MyDB:
         choice = input("Which one of the above databases do you want to use? ")
         return choice
     
-    def show_tables(self, database) -> None:
+    def show_tables(self, database) -> str:
         self.cursor.execute("use {}".format(database))
         self.cursor.execute("show tables")
         print("Tables:")
         print([row for row in self.cursor.fetchall()])
+        choice = input("Which one of the above tables do you want to use? ")
+        return choice
+    
+    def insert_data(self, database, table, data) -> None:
+        self.cursor.execute("use {}".format(database))
+        self.cursor.execute("insert into {} (text) values ('{}')".format(table, data))
+        self.db.commit()
 
 def main():
     mydb = MyDB(Database())
-    mydb.show_databases()
+    database = mydb.show_databases()
+    table = mydb.show_tables(database)
     input_json = JsonInput()
-    input_json.init()
     for json_file in input_json.json_files:
-        with open(input_json.json_path, 'r') as f:
+        with open(json_file, 'r') as f:
             data = json.load(f)
-        
+        counter = 0
+        for paragraph in data:
+            mydb.insert_data(database, table, str(paragraph['text']))
+            counter += 1
+            print(counter, "record(s) inserted.")
 
 
 if __name__ == "__main__":
