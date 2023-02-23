@@ -27,10 +27,10 @@ class DirInput(Directory):
      def init(self) -> None:
         dir_type = input("Do you want to scan one individual pdf or an entire directory? (Type 'pdf' or 'dir') ")
         if dir_type == 'pdf':
-            dir = input("Please enter the full pdf path for data input: ")
+            dir = input(" Please enter the full pdf path for data input: ")
             self.pdf_files = [dir]
         elif dir_type == 'dir':
-            dir = input("Please enter the directory path: ")
+            dir = input(" Please enter the directory path: ")
             self.pdf_files = tqdm(glob.glob(os.path.join(dir, '*.pdf')))
             if not self.pdf_files:
                 raise Exception("No PDF files in the directory.")
@@ -41,7 +41,7 @@ class DirInput(Directory):
 
 class DirOutput(Directory):
     def init(self) -> None:
-        dir = input("Please enter the full directory path for output: ")
+        dir = input(" Please enter the full directory path for output: ")
         self.dir = Path(dir)
 
 
