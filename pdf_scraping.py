@@ -30,7 +30,7 @@ class MyDB:
                 user=str(db.user),
                 password=str(db.password)
             )
-            print("Connect successfully.")
+            print("Connected successfully.")
 
             self.db = res
             self.cursor = self.db.cursor()
@@ -144,10 +144,22 @@ def main():
         output_file = os.path.splitext(os.path.basename(pdf_file))[0] + ".json"
         #construct full path
         output_path = os.path.join(diroutput.dir, output_file)
+        #Error handling to check if files exist
+        while os.path.exists(output_path):
+            exist_choice = input(f"The file {output_file} already exists within the directory. Type 'O' to overwrite, or 'N' to change the file name.")
+            if exist_choice == "O" or exist_choice == "o":
+                break
+            elif exist_choice == "N" or exist_choice == "n":
+                new_file = input("Enter the new file name:")
+                output_file = new_file + ".json"
+                output_path = os.path.join(diroutput.dir, output_file)
+                print(f"File name changed to {output_file}.")
+            else:
+                print("Invalid option, try again.")
         jsonString = json.dumps(content)
-        jsonFile = open(output_path, "w")
-        jsonFile.write(jsonString)
-        jsonFile.close()
+        with open(output_path, "w") as jsonFile:
+            jsonFile.write(jsonString)
+            jsonFile.close()
 
 if __name__ == "__main__":
     main()
