@@ -9,7 +9,30 @@ from pdf_scraping import Directory
 
 
 class JsonInput(Directory):
+    """
+    A class for importing JSON data from either an individual file or a directory of files.
+
+    ...
+
+    Attributes
+    ----------
+    json_files : list
+        A list of file paths to the JSON files that were imported.
+
+    Methods
+    -------
+    __init__():
+        Initializes the class instance by prompting the user to choose between importing an individual JSON file 
+        or a directory of files. If a directory is chosen, it searches for all JSON files in that directory.
+
+    """
     def __init__(self) -> None:
+        """
+        Initializes a JsonInput instance.
+
+        Prompts the user to choose between importing an individual JSON file or a directory of files.
+        If a directory is chosen, it searches for all JSON files in that directory.
+        """
         dir_type = input("Do you want to import from one individual json or an entire directory? (Type 'json' or 'dir') ")
         if dir_type == 'json':
             dir = input("Please enter the full json path for data input: ")
@@ -24,20 +47,76 @@ class JsonInput(Directory):
         self.dir = Path(dir)
 
 
+
 class Database:
+    """
+    A class for creating a database instance with user-specified connection parameters.
+
+    ...
+
+    Attributes
+    ----------
+    hostname : str
+        The hostname to connect to.
+    user : str
+        The user to connect with.
+    password : str
+        The password to connect with.
+
+    Methods
+    -------
+    __init__():
+        Initializes a Database instance.
+        Prompts the user to enter the hostname, user, and password to connect to the database.
+
+    """
     def __init__(self) -> None:
+        """
+        Initializes a Database instance.
+
+        Prompts the user to enter the hostname, user, and password to connect to the database.
+        """
         self.hostname = input("What host to connect to: ")
         self.user = input("What user to connect with: ")
         self.password = getpass.getpass("What password to connect with: ")
 
 
+
 class MyDB:
+    """
+    A class that represents an instance of mysql.connector.
+
+    ...
+
+    Attributes
+    ----------
+    db : mysql.connector.connection_cext.CMySQLConnection
+        The connection object representing the connection to the MySQL server.
+    cursor : mysql.connector.cursor_cext.CMySQLCursor
+        The cursor object representing the database cursor.
+        
+    Methods
+    -------
+    __init__(db):
+        Initializes a MyDB instance by connecting to a MySQL server using the Database object provided.
+    show_databases():
+        Retrieves a list of databases on the connected MySQL server and prompts the user to choose one.
+        Returns the name of the chosen database as a string.
+    show_tables(database):
+        Retrieves a list of tables in the given database and prompts the user to choose one.
+        Returns the name of the chosen table as a string.
+    insert_data(database, table, data):
+        Inserts the given data into the specified table in the specified database.
+
+    """
     def __init__(self, db: Database):
         """
-            MyDB is a class represent an instance of mysql.connector
+        Initializes a MyDB instance by connecting to a MySQL server using the Database object provided.
 
-        Args:
-            db (Database): Database is the class stored information to login into specific MySQL server 
+        Parameters
+        ----------
+        db : Database
+            The Database object containing the connection parameters.
         """    
         try:
             res = mysql.connector.connect(
@@ -54,6 +133,14 @@ class MyDB:
             print("Something went wrong: {}".format(err))
     
     def show_databases(self) -> str:
+        """
+        Retrieves a list of databases on the connected MySQL server and prompts the user to choose one.
+
+        Returns
+        -------
+        str
+            The name of the chosen database.
+        """
         self.cursor.execute("show databases")
         print("Databases:")
         print([row for row in self.cursor.fetchall()])
@@ -61,6 +148,19 @@ class MyDB:
         return choice
     
     def show_tables(self, database) -> str:
+        """
+        Retrieves a list of tables in the given database and prompts the user to choose one.
+
+        Parameters
+        ----------
+        database : str
+            The name of the database to retrieve tables from.
+
+        Returns
+        -------
+        str
+            The name of the chosen table.
+        """
         self.cursor.execute("use {}".format(database))
         self.cursor.execute("show tables")
         print("Tables:")
@@ -69,9 +169,22 @@ class MyDB:
         return choice
     
     def insert_data(self, database, table, data) -> None:
+        """
+        Inserts the given data into the specified table in the specified database.
+
+        Parameters
+        ----------
+        database : str
+            The name of the database to insert data into.
+        table : str
+            The name of the table to insert data into.
+        data : str
+            The data to be inserted into the table.
+        """
         self.cursor.execute("use {}".format(database))
         self.cursor.execute("insert into {} (text) values ('{}')".format(table, data))
         self.db.commit()
+
 
 def main():
     mydb = MyDB(Database())
@@ -85,7 +198,7 @@ def main():
         for paragraph in data:
             mydb.insert_data(database, table, str(paragraph['text']))
             counter += 1
-            print(counter, "record(s) inserted.")
+        print(counter, "record(s) inserted.")
 
 
 if __name__ == "__main__":

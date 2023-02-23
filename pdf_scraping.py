@@ -127,7 +127,7 @@ def main():
             if exist_choice == "O" or exist_choice == "o":
                 break
             elif exist_choice == "N" or exist_choice == "n":
-                new_file = input("Enter the new file name:")
+                new_file = input(" Enter the new file name:")
                 output_file = new_file + ".json"
                 output_path = os.path.join(diroutput.dir, output_file)
                 print(f"File name changed to {output_file}.")
