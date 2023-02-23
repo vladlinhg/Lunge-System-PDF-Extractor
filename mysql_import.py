@@ -198,7 +198,7 @@ def main():
         for paragraph in data:
             mydb.insert_data(database, table, str(paragraph['text']))
             counter += 1
-        print(counter, "record(s) inserted.")
+        print(f" {counter} record(s) inserted.")
 
 
 if __name__ == "__main__":
