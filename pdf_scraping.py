@@ -6,7 +6,11 @@ import pdfplumber
 import json
 import os
 import glob
+import re
 from tqdm import tqdm
+import nltk.corpus
+from nltk.corpus import stopwords
+nltk.download('stopwords')
 
 
 class Directory:
@@ -73,6 +77,7 @@ def extract_content(pdf_path):
         paragraph_number = 1
         content = []
         for paragraph in paragraphs:
+            paragraph = clean_paragraph(paragraph)
             #Strip whitespace
             if paragraph.strip() == "":
                 #Check if paragraph is empty. If it is, clear string and add paragraph count, append text
@@ -87,6 +92,19 @@ def extract_content(pdf_path):
             #Once all paragraphs are processed, append to the content list
             content.append({"paragraph_number": paragraph_number, "text": current_paragraph})
     return content
+
+def clean_paragraph(paragraph):
+    # step 1: Normalize Text
+    paragraph = paragraph.lower()
+
+    # Step 2: Remove Unicode Characters
+    paragraph = re.sub(r"(@[A-Za-z0-9]+)|([^0-9A-Za-z \t])|(\w+://\S+)|^rt|http.+?", "", paragraph)
+
+    # Step 3: Remove Stopwords
+    stop = stopwords.words('english')
+    paragraph = " ".join([word for word in paragraph.split() if word not in (stop)])
+
+    return paragraph
 
 
 def main():
