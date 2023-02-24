@@ -184,6 +184,50 @@ class MyDB:
         self.cursor.execute("use {}".format(database))
         self.cursor.execute("insert into {} (text) values ('{}')".format(table, data))
         self.db.commit()
+    
+    def insert_multi_data(self, database, table, column, data) -> None:
+        """
+        Inserts the given data into the specified column in the specified table in the specified database.
+
+        Parameters
+        ----------
+        database : str
+            The name of the database to insert data into.
+        table : str
+            The name of the table to insert data into.
+        column : list
+            The list of columns to insert data into.
+        data : list
+            The data to be inserted into the table.
+        """
+        self.cursor.execute("use {}".format(database))
+        columns = ', '.join(column)
+        placeholders = ', '.join(['%s'] * len(data))
+        sql = f"INSERT INTO {table} ({columns}) VALUES ({placeholders})"
+        self.cursor.execute(sql, data)
+        self.db.commit()
+    
+    def extract_data(self, database, table, column) -> list:
+        """
+        Extracts the data from the specified column in the specified table in the specified database.
+
+        Parameters
+        ----------
+        database : str
+            The name of the database to extract data from.
+        table : str
+            The name of the table to extract data from.
+        column : str
+            The name of the column to extract data from.
+
+        Returns
+        -------
+        list
+            A list of tuples containing the data from the specified column.
+        """
+        self.cursor.execute("use {}".format(database))
+        self.cursor.execute("select {} from {}".format(column, table))
+        return self.cursor.fetchall()
 
 
 def main():
