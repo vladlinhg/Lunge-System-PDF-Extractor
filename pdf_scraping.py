@@ -30,7 +30,7 @@ class DirInput(Directory):
             dir = input(" Please enter the full pdf path for data input: ")
             self.pdf_files = [dir]
         elif dir_type == 'dir':
-            dir = input(" Please enter the directory path: ")
+            dir = input(" nPlease enter the directory path: ")
             self.pdf_files = tqdm(glob.glob(os.path.join(dir, '*.pdf')))
             if not self.pdf_files:
                 raise Exception("No PDF files in the directory.")
@@ -59,6 +59,13 @@ def extract_content(pdf_path):
     #extracting text with pdfplumber, initialize full text variable to extract to.
     with pdfplumber.open(pdf_path) as pdf:
         full_text = ""
+        metadata = pdf.metadata
+        # Get the metadata
+        metadata_creator = metadata.get("Creator", "")
+        metadata_author = metadata.get("Author", "")
+        metadata_publish = metadata.get("CreationDate", "")
+        metadata_title = metadata.get("Title", "")
+        
         for page in pdf.pages:
             full_text += page.extract_text(
                 x_tolerance=3,
@@ -82,7 +89,16 @@ def extract_content(pdf_path):
             if paragraph.strip() == "":
                 #Check if paragraph is empty. If it is, clear string and add paragraph count, append text
                 if current_paragraph != "":
-                    content.append({"paragraph_number": paragraph_number, "text": current_paragraph})
+                    content.append({
+                        "paragraph_number": paragraph_number,
+                        "text": current_paragraph,
+                        "metadata": {
+                            "Title": metadata_title,
+                            "Author": metadata_author,
+                            "Creator": metadata_creator,
+                            "Publishing_date": metadata_publish
+                        }
+                    })
                     current_paragraph = ""
                     paragraph_number += 1
             else:
@@ -90,7 +106,17 @@ def extract_content(pdf_path):
                 current_paragraph += " " + paragraph
         if current_paragraph != "":
             #Once all paragraphs are processed, append to the content list
-            content.append({"paragraph_number": paragraph_number, "text": current_paragraph})
+            content.append({
+                "paragraph_number": paragraph_number,
+                "text": current_paragraph,
+                "metadata": {
+                    "Title": metadata_title,
+                    "Author": metadata_author,
+                    "Creator": metadata_creator,
+                    "Publishing_date": metadata_publish
+                }
+            })
+        
     return content
 
 def clean_paragraph(paragraph):
