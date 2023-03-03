@@ -7,6 +7,7 @@
 1. install pdfplumber
     1. pip install pdfplumber
     2. pip install tqdm (progress bar for directory scan)
+    3. pip install nltk 
 
 
 # Features to be Implemented
@@ -18,6 +19,7 @@
     2. Progress
         1. Directory class established
         2. Data stored in .json
+        3. Metadata is now stored in .json
 
 2. Read Function
     1. Goal
