@@ -16,9 +16,16 @@ nltk.download('stopwords')
 class Directory:
     """Represents a directory path for input or output of PDF files."""
     def init(self) -> None:
-        """Prompts the user to input a directory path and stores it as a Path object."""
-        dir = input("Please enter the directory path (not including the pdf): ")
-        self.dir = Path(dir)
+        while True:
+            """Prompts the user to input a directory path and stores it as a Path object."""
+            try:
+                dir = input("Please enter the directory path (not including the pdf): ")
+                self.dir = Path(dir)
+                if not self.dir.exists() or not self.dir.is_dir():
+                    raise ValueError("Invalid directory path. Please try again.")
+                break
+            except Exception as ex:
+                print("Error:", ex)
 
 
 class DirInput(Directory):
@@ -65,6 +72,7 @@ def extract_content(pdf_path):
         metadata_author = metadata.get("Author", "")
         metadata_publish = metadata.get("CreationDate", "")
         metadata_title = metadata.get("Title", "")
+        metadata_producer = metadata.get("Producer", "")
         
         for page in pdf.pages:
             full_text += page.extract_text(
@@ -90,15 +98,17 @@ def extract_content(pdf_path):
                 #Check if paragraph is empty. If it is, clear string and add paragraph count, append text
                 if current_paragraph != "":
                     content.append({
-                        "paragraph_number": paragraph_number,
-                        "text": current_paragraph,
-                        "metadata": {
-                            "Title": metadata_title,
-                            "Author": metadata_author,
-                            "Creator": metadata_creator,
-                            "Publishing_date": metadata_publish
-                        }
-                    })
+                "paragraph_number": paragraph_number,
+                "text": current_paragraph,
+                "metadata": {
+                    "Title": metadata_title,
+                    "Author": metadata_author,
+                    "Creator": metadata_creator,
+                    "Publishing_date": metadata_publish,
+                    "Producer": metadata_producer
+                }
+            })
+        
                     current_paragraph = ""
                     paragraph_number += 1
             else:
@@ -113,7 +123,8 @@ def extract_content(pdf_path):
                     "Title": metadata_title,
                     "Author": metadata_author,
                     "Creator": metadata_creator,
-                    "Publishing_date": metadata_publish
+                    "Publishing_date": metadata_publish,
+                    "Producer": metadata_producer
                 }
             })
         
