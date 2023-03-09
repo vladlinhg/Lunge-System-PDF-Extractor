@@ -41,7 +41,7 @@ class JsonInput(Directory):
             dir = input("Please enter the directory path: ")
             self.json_files = tqdm(glob.glob(os.path.join(dir, '*.json')))
             if not self.json_files:
-                raise Exception("No PDF files in the directory.")
+                raise Exception("No json files in the directory.")
         else:
             raise Exception("Invalid input. Please enter 'json' or 'dir'.")
         self.dir = Path(dir)
@@ -236,17 +236,18 @@ class MyDB:
 
 def main():
     mydb = MyDB(Database())
-    database = mydb.show_databases()
-    table = mydb.show_tables(database)
+    database = "lungesystem"
+    table = "resources"
     input_json = JsonInput()
+    counter = 0
     for json_file in input_json.json_files:
         with open(json_file, 'r') as f:
             data = json.load(f)
-        counter = 0
-        for paragraph in data:
-            mydb.insert_multi_data(database, table, ['text', 'author', 'title', 'date'], (paragraph['text'], paragraph['metadata']['Author'], paragraph['metadata']['Title'], paragraph['metadata']['Publishing_date']))
-            counter += 1
-        print(f" {counter} record(s) inserted.")
+        mydb.insert_multi_data(database, table, ["url", "author", "title", "date", "directory"], [data["url"], data["author"], data["title"], data["publishing_date"], json_file])
+        # for paragraph in data["content"]:
+        #     mydb.insert_data(database, table, paragraph['text'])
+        counter += 1
+    print(f" {counter} record(s) inserted.")
 
 
 if __name__ == "__main__":

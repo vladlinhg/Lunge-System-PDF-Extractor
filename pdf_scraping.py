@@ -60,7 +60,7 @@ def extract_content(pdf_path):
         pdf_path (str): The file path to the PDF file to extract content from.
 
     Returns:
-        content (list): A list of dictionaries, where each dictionary represents a paragraph and contains a 
+        content (dict): A list of dictionaries, where each dictionary represents a paragraph and contains a 
         paragraph number and its corresponding text.
     """
     #extracting text with pdfplumber, initialize full text variable to extract to.
@@ -131,10 +131,11 @@ def extract_content(pdf_path):
         res["title"] = metadata_title
         res["author"] = metadata_author
         res["publishing_date"] = metadata_publish
+        res["url"] = str(pdf_path)
         res["content"] = content
         
         
-    return content
+    return res
 
 def clean_paragraph(paragraph):
     # step 1: Normalize Text
@@ -157,7 +158,6 @@ def main():
     diroutput = DirOutput()
     dirinput.init()
     diroutput.init()
-    content = []
     for pdf_file in dirinput.pdf_files:
         content = extract_content(pdf_file)
         #split filename from the extension, add .json to the end
