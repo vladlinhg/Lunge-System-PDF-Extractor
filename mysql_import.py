@@ -76,9 +76,13 @@ class Database:
 
         Prompts the user to enter the hostname, user, and password to connect to the database.
         """
-        self.hostname = input("What host to connect to: ")
-        self.user = input("What user to connect with: ")
-        self.password = getpass.getpass("What password to connect with: ")
+        # self.hostname = input("What host to connect to: ")
+        # self.user = input("What user to connect with: ")
+        # self.password = getpass.getpass("What password to connect with: ")
+
+        self.hostname = "lungesystemsdb.cy9u84h2ibd2.us-west-2.rds.amazonaws.com"
+        self.user = "admin"
+        self.password = "AbhayGupta"
 
 
 
@@ -240,7 +244,7 @@ def main():
             data = json.load(f)
         counter = 0
         for paragraph in data:
-            mydb.insert_data(database, table, str(paragraph['text']))
+            mydb.insert_multi_data(database, table, ['text', 'author', 'title', 'date'], (paragraph['text'], paragraph['metadata']['Author'], paragraph['metadata']['Title'], paragraph['metadata']['Publishing_date']))
             counter += 1
         print(f" {counter} record(s) inserted.")
 

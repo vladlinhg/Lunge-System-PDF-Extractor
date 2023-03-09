@@ -99,14 +99,14 @@ def extract_content(pdf_path):
                 if current_paragraph != "":
                     content.append({
                 "paragraph_number": paragraph_number,
-                "text": current_paragraph,
-                "metadata": {
-                    "Title": metadata_title,
-                    "Author": metadata_author,
-                    "Creator": metadata_creator,
-                    "Publishing_date": metadata_publish,
-                    "Producer": metadata_producer
-                }
+                "text": current_paragraph
+                # "metadata": {
+                #     "Title": metadata_title,
+                #     "Author": metadata_author,
+                #     "Creator": metadata_creator,
+                #     "Publishing_date": metadata_publish,
+                #     "Producer": metadata_producer
+                # }
             })
         
                     current_paragraph = ""
@@ -118,15 +118,21 @@ def extract_content(pdf_path):
             #Once all paragraphs are processed, append to the content list
             content.append({
                 "paragraph_number": paragraph_number,
-                "text": current_paragraph,
-                "metadata": {
-                    "Title": metadata_title,
-                    "Author": metadata_author,
-                    "Creator": metadata_creator,
-                    "Publishing_date": metadata_publish,
-                    "Producer": metadata_producer
-                }
+                "text": current_paragraph
+                # "metadata": {
+                #     "Title": metadata_title,
+                #     "Author": metadata_author,
+                #     "Creator": metadata_creator,
+                #     "Publishing_date": metadata_publish,
+                #     "Producer": metadata_producer
+                # }
             })
+        res = {}
+        res["title"] = metadata_title
+        res["author"] = metadata_author
+        res["publishing_date"] = metadata_publish
+        res["content"] = content
+        
         
     return content
 
