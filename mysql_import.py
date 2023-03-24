@@ -207,7 +207,9 @@ class MyDB:
         self.cursor.execute("use {}".format(database))
         columns = ', '.join(column)
         placeholders = ', '.join(['%s'] * len(data))
+        # placeholders to be used in the sql statement
         sql = f"INSERT INTO {table} ({columns}) VALUES ({placeholders})"
+        # execute the sql statement
         self.cursor.execute(sql, data)
         self.db.commit()
     
@@ -230,6 +232,7 @@ class MyDB:
             A list of tuples containing the data from the specified column.
         """
         self.cursor.execute("use {}".format(database))
+        # add one cloumn at a time
         self.cursor.execute("select {} from {}".format(column, table))
         return self.cursor.fetchall()
 
@@ -247,6 +250,7 @@ def main():
         # for paragraph in data["content"]:
         #     mydb.insert_data(database, table, paragraph['text'])
         counter += 1
+        # counter to move to next file
     print(f" {counter} record(s) inserted.")
 
 
